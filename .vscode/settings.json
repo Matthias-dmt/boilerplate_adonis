@@ -1,0 +1,24 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "eslint.alwaysShowStatus": true,
+  "eslint.validate": ["javascript", "typescript"],
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "prettier.requireConfig": true,
+  "search.exclude": {
+    "node_modules": true,
+    "build": true,
+    "dist": true
+  },
+  "explorer.excludeGitIgnore": true,
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "editor.rulers": [100],
+  "editor.wordWrap": "off"
+}
