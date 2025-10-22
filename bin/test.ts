@@ -12,9 +12,10 @@
 
 process.env.NODE_ENV = 'test'
 
-import 'reflect-metadata'
 import { Ignitor, prettyPrintError } from '@adonisjs/core'
 import { configure, processCLIArgs, run } from '@japa/runner'
+import { ndjson, spec } from '@japa/runner/reporters'
+import 'reflect-metadata'
 
 /**
  * URL to the application root. AdonisJS need it to resolve
@@ -52,6 +53,10 @@ new Ignitor(APP_ROOT, { importer: IMPORTER })
       ...{
         setup: runnerHooks.setup,
         teardown: runnerHooks.teardown.concat([() => app.terminate()]),
+      },
+      reporters: {
+        activated: ['spec'],
+        list: [ndjson(), spec()], // 👈 Make sure to include ndjson
       },
     })
   })

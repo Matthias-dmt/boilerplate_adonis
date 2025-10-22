@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dev server",
+      "program": "${workspaceFolder}/ace.js",
+      "args": ["serve", "--hmr"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Tests",
+      "program": "${workspaceFolder}/ace.js",
+      "args": ["test", "--watch"],
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "args": ["test", "--enable-source-maps", "--files", "${file}"],
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Test file",
+      "skipFiles": ["<node_internals>/**"],
+      "program": "${workspaceFolder}/ace",
+      "env": {
+        "NODE_ENV": "test"
+      },
+      "envFile": "${workspaceFolder}/.env.test"
+    }
+  ]
+}

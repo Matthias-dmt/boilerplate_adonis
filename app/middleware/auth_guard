@@ -1,0 +1,10 @@
+import type { HttpContext } from '@adonisjs/core/http'
+
+export default class AuthGuard {
+  public async handle(ctx: HttpContext, next: () => Promise<void>) {
+    const token = (ctx.request.header('authorization') ?? '').split(' ')[1]
+    if (!token) return ctx.response.unauthorized({ error: { code: 'UNAUTHENTICATED', message: 'Missing token' } })
+    ;(ctx as any).auth = { userId: 'admin' }
+    await next()
+  }
+}

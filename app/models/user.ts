@@ -1,33 +1,34 @@
+import { BaseModel, beforeCreate, beforeSave, column } from '@adonisjs/lucid/orm'
+import argon2 from 'argon2'
 import { DateTime } from 'luxon'
-import hash from '@adonisjs/core/services/hash'
-import { compose } from '@adonisjs/core/helpers'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
-import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
-import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import { randomUUID } from 'node:crypto'
 
-const AuthFinder = withAuthFinder(() => hash.use('scrypt'), {
-  uids: ['email'],
-  passwordColumnName: 'password',
-})
+export default class User extends BaseModel {
+  @column({ isPrimary: true }) declare id: string
+  @column() declare email: string
+  @column({ serializeAs: null }) declare password: string
+  @column() declare firstName: string
+  @column() declare lastName: string
+  @column() declare isActive: boolean
+  @column.dateTime() declare lastLoginAt: DateTime | null
+  @column.dateTime({ autoCreate: true }) declare createdAt: DateTime
+  @column.dateTime({ autoCreate: true, autoUpdate: true }) declare updatedAt: DateTime
+  @column.dateTime() declare deletedAt: DateTime | null
 
-export default class User extends compose(BaseModel, AuthFinder) {
-  @column({ isPrimary: true })
-  declare id: number
+  static async hashPassword(plain: string) {
+    return argon2.hash(plain, { type: argon2.argon2id })
+  }
+  static async verifyPassword(hash: string, plain: string) {
+    return argon2.verify(hash, plain)
+  }
 
-  @column()
-  declare fullName: string | null
+  @beforeCreate()
+  static assignId(u: User) {
+    if (!u.id) u.id = randomUUID()
+  }
 
-  @column()
-  declare email: string
-
-  @column({ serializeAs: null })
-  declare password: string
-
-  @column.dateTime({ autoCreate: true })
-  declare createdAt: DateTime
-
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
-  declare updatedAt: DateTime | null
-
-  static accessTokens = DbAccessTokensProvider.forModel(User)
+  @beforeSave()
+  static normalize(u: User) {
+    if (u.$dirty.email) u.email = u.email.trim().toLowerCase()
+  }
 }
