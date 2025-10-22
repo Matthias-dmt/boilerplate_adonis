@@ -1,3 +1,5 @@
+import { toIso } from '#utils/date'
+
 export type UserDTO = {
   id: string
   email: string
@@ -6,6 +8,7 @@ export type UserDTO = {
   isActive: boolean
   createdAt: string
   updatedAt: string
+  lastLoginAt: string | null
 }
 
 export const toUserDTO = (u: any): UserDTO => ({
@@ -13,7 +16,8 @@ export const toUserDTO = (u: any): UserDTO => ({
   email: u.email,
   firstName: u.firstName,
   lastName: u.lastName,
-  isActive: u.isActive,
-  createdAt: u.createdAt.toISO?.() ?? String(u.createdAt),
-  updatedAt: u.updatedAt.toISO?.() ?? String(u.updatedAt),
+  isActive: !!u.isActive,
+  lastLoginAt: toIso(u.lastLoginAt),
+  createdAt: toIso(u.createdAt)!,
+  updatedAt: toIso(u.updatedAt)!,
 })

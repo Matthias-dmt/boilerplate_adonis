@@ -34,4 +34,21 @@ test.group('UserService', (group) => {
       svc.create({ email: 'dup@a.com', password: 'Password!123', firstName: 'A', lastName: 'B' })
     )
   })
+
+  test('get not found throws', async ({ assert }) => {
+    const svc = new UserService()
+    await assert.rejects(() => svc.get('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'))
+  })
+
+  test('update not found throws', async ({ assert }) => {
+    const svc = new UserService()
+    await assert.rejects(() =>
+      svc.update('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee', { firstName: 'X' })
+    )
+  })
+
+  test('remove is idempotent (no throw on unknown id)', async ({ assert }) => {
+    const svc = new UserService()
+    await assert.doesNotReject(() => svc.remove('aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'))
+  })
 })
