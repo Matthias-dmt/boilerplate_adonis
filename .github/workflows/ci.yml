@@ -1,0 +1,76 @@
+name: ci
+
+on:
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: adonis
+          POSTGRES_PASSWORD: adonis
+          POSTGRES_DB: adonis_test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd="pg_isready -U adonis -d adonis_test"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Create .env.test
+        run: |
+          cat > .env.test <<'EOF'
+          NODE_ENV=test
+          DB_CONNECTION=pg
+          PG_HOST=localhost
+          PG_PORT=5433
+          PG_USER=adonis
+          PG_PASSWORD=adonis
+          PG_DB_NAME=adonis_test
+          EOF
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Tests + Coverage
+        run: pnpm run test:ci
+
+      - name: Coverage report (artifact)
+        if: always()
+        run: pnpm run coverage:report
+
+      - name: Upload lcov
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info

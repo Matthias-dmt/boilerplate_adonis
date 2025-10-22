@@ -16,7 +16,7 @@
     "build": true,
     "dist": true
   },
-  "explorer.excludeGitIgnore": true,
+  "explorer.excludeGitIgnore": false,
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
   "editor.rulers": [100],
