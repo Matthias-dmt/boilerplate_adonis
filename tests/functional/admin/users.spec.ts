@@ -76,8 +76,8 @@ test.group('Admin Users errors', (group) => {
     })
 
     res.dumpError()
-    res.assertStatus(400)
-    res.assertBodyContains({ error: { code: 'VALIDATION_ERROR' } })
+    res.assertStatus(422)
+    assert.equal(res.response.body.error.code, 'E_VALIDATION_ERROR')
   })
 
   test('404 on show with unknown id', async ({ client }) => {
@@ -110,7 +110,7 @@ test.group('Admin Users errors', (group) => {
   })
 
   test('409 on update duplicate email', async ({ client }) => {
-    const a = await UserFactory.merge({ email: 'a@example.com' }).create()
+    await UserFactory.merge({ email: 'a@example.com' }).create()
     const b = await UserFactory.merge({ email: 'b@example.com' }).create()
     const res = await client
       .patch(`/v1/admin/users/${b.id}`)
@@ -132,7 +132,7 @@ test.group('Admin Users errors', (group) => {
     res.assertBodyContains({ error: { code: 'USER_NOT_FOUND' } })
   })
 
-  test('list supports sort whitelist + search', async ({ client, assert }) => {
+  test('list supports sort whitelist + search', async ({ client }) => {
     await UserFactory.merge({ firstName: 'Zed', email: 'z@z.com' }).create()
     await UserFactory.merge({ firstName: 'Ann', email: 'a@a.com' }).create()
     const res = await client
