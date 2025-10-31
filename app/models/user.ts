@@ -1,3 +1,4 @@
+import type { UserRole } from '#contracts/constants/roles'
 import type { AccessToken } from '@adonisjs/auth/access_tokens'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { BaseModel, beforeCreate, beforeSave, column } from '@adonisjs/lucid/orm'
@@ -23,6 +24,9 @@ export default class User extends BaseModel {
 
   @column()
   declare isActive: boolean
+
+  @column()
+  declare role: UserRole
 
   @column.dateTime()
   declare lastLoginAt: DateTime | null

@@ -8,6 +8,7 @@ export default Factory.define(User, ({ faker }) => {
     firstName: faker.person.firstName(),
     lastName: faker.person.lastName(),
     isActive: true,
+    role: 'customer',
     lastLoginAt: null,
     deletedAt: null,
   }

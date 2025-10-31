@@ -6,7 +6,7 @@
       "request": "launch",
       "name": "Dev server",
       "program": "${workspaceFolder}/ace.js",
-      "args": ["serve", "--hmr"],
+      "args": ["serve", "--watch"],
       "skipFiles": ["<node_internals>/**"]
     },
     {

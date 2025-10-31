@@ -1,3 +1,4 @@
+import { ROLES } from '#contracts/constants/roles'
 import vine from '@vinejs/vine'
 
 export const userCreateValidator = vine.compile(
@@ -7,5 +8,6 @@ export const userCreateValidator = vine.compile(
     firstName: vine.string().trim().minLength(1),
     lastName: vine.string().trim().minLength(1),
     isActive: vine.boolean().optional(),
+    role: vine.enum(ROLES).optional(),
   })
 )

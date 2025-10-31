@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.string('first_name').notNullable()
       table.string('last_name').notNullable()
       table.boolean('is_active').notNullable().defaultTo(true)
+      table.string('role').notNullable().defaultTo('customer').index()
       table.timestamp('last_login_at', { useTz: true })
       table.timestamp('created_at', { useTz: true }).notNullable().defaultTo(this.now())
       table.timestamp('updated_at', { useTz: true }).notNullable().defaultTo(this.now())

@@ -1,3 +1,4 @@
+import type { UserRole } from '#contracts/constants/roles'
 import { UserService } from '#services/user_service'
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
@@ -8,8 +9,9 @@ export default class extends BaseSeeder {
     const password = process.env.ADMIN_PASSWORD ?? 'helloWorld'
     const firstName = 'Admin'
     const lastName = 'User'
+    const role: UserRole = 'super_admin'
     try {
-      await svc.create({ email, password, firstName, lastName, isActive: true })
+      await svc.create({ email, password, firstName, lastName, isActive: true, role })
     } catch {}
   }
 }
