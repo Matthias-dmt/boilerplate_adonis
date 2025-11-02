@@ -1,3 +1,4 @@
+import type { UserRole } from '#contracts/constants/roles'
 import { toIso } from '#utils/date'
 
 export type UserDTO = {
@@ -9,6 +10,7 @@ export type UserDTO = {
   createdAt: string
   updatedAt: string
   lastLoginAt: string | null
+  role: UserRole
 }
 
 export const toUserDTO = (u: any): UserDTO => ({
@@ -20,4 +22,5 @@ export const toUserDTO = (u: any): UserDTO => ({
   lastLoginAt: toIso(u.lastLoginAt),
   createdAt: toIso(u.createdAt)!,
   updatedAt: toIso(u.updatedAt)!,
+  role: u.role,
 })

@@ -1,8 +1,8 @@
 import type { UserRole } from '#contracts/constants/roles'
 import type { AccessToken } from '@adonisjs/auth/access_tokens'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
+import hash from '@adonisjs/core/services/hash'
 import { BaseModel, beforeCreate, beforeSave, column } from '@adonisjs/lucid/orm'
-import argon2 from 'argon2'
 import { DateTime } from 'luxon'
 import { randomUUID } from 'node:crypto'
 
@@ -42,12 +42,8 @@ export default class User extends BaseModel {
 
   declare currentAccessToken?: AccessToken
 
-  static async hashPassword(plain: string) {
-    return argon2.hash(plain, { type: argon2.argon2id })
-  }
-
-  static async verifyPassword(hash: string, plain: string) {
-    return argon2.verify(hash, plain)
+  static async verifyPassword(existingHash: string, plain: string) {
+    return await hash.verify(existingHash, plain)
   }
 
   @beforeCreate()
@@ -64,7 +60,7 @@ export default class User extends BaseModel {
     }
 
     if (user.$dirty.password) {
-      user.password = await User.hashPassword(user.password)
+      user.password = await hash.make(user.password)
     }
   }
 

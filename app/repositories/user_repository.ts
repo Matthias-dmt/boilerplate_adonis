@@ -1,7 +1,7 @@
+import type { UserRole } from '#contracts/constants/roles'
 import User from '#models/user'
 import type { Sort } from '#utils/query'
 import { DateTime } from 'luxon'
-
 export class UserRepository {
   async paginate(params: { page: number; perPage: number; search?: string; sorts: Sort[] }) {
     const q = User.query().whereNull('deleted_at')
@@ -34,14 +34,15 @@ export class UserRepository {
     firstName: string
     lastName: string
     isActive?: boolean
+    role?: UserRole
   }) {
-    const passwordHash = await User.hashPassword(data.password)
     return User.create({
       email: data.email,
-      password: passwordHash,
+      password: data.password,
       firstName: data.firstName,
       lastName: data.lastName,
       isActive: data.isActive ?? true,
+      role: data.role ?? 'customer',
     })
   }
 
@@ -53,10 +54,10 @@ export class UserRepository {
       firstName: string
       lastName: string
       isActive: boolean
+      role?: UserRole
     }>
   ) {
-    if (data.password) entity.password = await User.hashPassword(data.password)
-    entity.merge({ ...data, password: undefined })
+    entity.merge({ ...data })
     await entity.save()
     return entity
   }

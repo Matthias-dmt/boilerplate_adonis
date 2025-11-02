@@ -1,8 +1,7 @@
-// app/Services/UserService.ts
+import { UserRole } from '#contracts/constants/roles'
 import { toUserDTO, type UserDTO } from '#contracts/dtos/user'
 import { Conflict, NotFound } from '#exceptions/http_error_exception'
 import { UserRepository } from '#repositories/user_repository'
-
 export class UserService {
   constructor(private readonly repo = new UserRepository()) {}
 
@@ -36,6 +35,7 @@ export class UserService {
     firstName: string
     lastName: string
     isActive?: boolean
+    role?: UserRole
   }): Promise<UserDTO> {
     const existing = await this.repo.findByEmail(payload.email)
     if (existing) throw Conflict('EMAIL_TAKEN', 'Email already in use')
@@ -51,6 +51,7 @@ export class UserService {
       firstName: string
       lastName: string
       isActive: boolean
+      role: UserRole
     }>
   ): Promise<UserDTO> {
     const u = await this.repo.findById(id)
