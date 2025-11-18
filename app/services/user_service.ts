@@ -9,7 +9,7 @@ export class UserService {
     page: number
     perPage: number
     search?: string
-    sorts?: { field: string; direction: 'asc' | 'desc' }[]
+    sorts: { field: string; direction: 'asc' | 'desc' }[]
   }) {
     const page = await this.repo.paginate(params)
     return {

@@ -1,3 +1,4 @@
+import { USER_DEFAULT_SORT, USER_SORT_FIELDS } from '#contracts/constants/user'
 import { HttpError } from '#exceptions/http_error_exception'
 import { UserService } from '#services/user_service'
 import { err, ok } from '#utils/api_response'
@@ -39,7 +40,7 @@ export default class UsersController {
   async index({ request, response }: HttpContext) {
     const q = await request.validateUsing(userListQueryValidator)
     const { page, perPage } = parsePagination(q.page, q.perPage)
-    const sorts = parseSort(q.sort)
+    const sorts = parseSort(q.sort, USER_SORT_FIELDS, USER_DEFAULT_SORT)
     const res = await this.svc.list({ page, perPage, search: q.search, sorts })
     return response.ok(ok(res.data, res.meta))
   }
@@ -107,8 +108,8 @@ export default class UsersController {
    * }
    */
   async store({ request, response }: HttpContext) {
-    const payload = await request.validateUsing(userCreateValidator)
     try {
+      const payload = await request.validateUsing(userCreateValidator)
       const data = await this.svc.create(payload)
       return response.created(ok(data))
     } catch (e) {
